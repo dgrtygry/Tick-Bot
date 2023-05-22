@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,6 +21,10 @@
     const chatbox = document.getElementById('chatbox');
     const userInput = document.getElementById('userInput');
     let learnedResponses = [];
+    let wordList = [];
+
+    // Fetch word list from the provided URL
+    fetchWordList();
 
     function sendMessage() {
       const userMessage = userInput.value;
@@ -38,6 +43,17 @@
       chatbox.scrollTop = chatbox.scrollHeight;
     }
 
+    function fetchWordList() {
+      fetch('https://raw.githubusercontent.com/dwyl/english-words/master/words.txt')
+        .then(response => response.text())
+        .then(data => {
+          wordList = data.split('\n');
+        })
+        .catch(error => {
+          console.log('Error fetching word list:', error);
+        });
+    }
+
     function generateBotResponse(userMessage) {
       if (learnedResponses.length > 0) {
         const lastUserMessage = learnedResponses[learnedResponses.length - 1].userMessage;
@@ -47,9 +63,21 @@
         }
       }
 
-      const defaultResponse = "I'm sorry, I'm still learning. Can you please rephrase that?";
-      learnedResponses.push({ userMessage, botResponse: defaultResponse });
-      return defaultResponse;
+      const words = userMessage.split(' ');
+      const botResponse = words
+        .map(word => getRandomWord())
+        .join(' ');
+
+      learnedResponses.push({ userMessage, botResponse });
+      return botResponse;
+    }
+
+    function getRandomWord() {
+      if (wordList.length > 0) {
+        const randomIndex = Math.floor(Math.random() * wordList.length);
+        return wordList[randomIndex];
+      }
+      return '';
     }
   </script>
 </head>
