@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tick Studio's Chatbot</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom, purple, orange);
+    }
+    
+    #chatbox {
+      width: 400px;
+      height: 400px;
+      border: 1px solid #ccc;
+      overflow-y: scroll;
+      padding: 10px;
+      background-color: white;
+    }
+  </style>
+  <script>
+    const chatbox = document.getElementById('chatbox');
+    const userInput = document.getElementById('userInput');
+    let learnedResponses = [];
+
+    function sendMessage() {
+      const userMessage = userInput.value;
+      displayMessage('User: ' + userMessage);
+
+      const botResponse = generateBotResponse(userMessage);
+      displayMessage('Bot: ' + botResponse);
+
+      userInput.value = '';
+    }
+
+    function displayMessage(message) {
+      const p = document.createElement('p');
+      p.textContent = message;
+      chatbox.appendChild(p);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function generateBotResponse(userMessage) {
+      if (learnedResponses.length > 0) {
+        const lastUserMessage = learnedResponses[learnedResponses.length - 1].userMessage;
+        if (userMessage === lastUserMessage) {
+          const lastBotResponse = learnedResponses[learnedResponses.length - 1].botResponse;
+          return lastBotResponse;
+        }
+      }
+
+      const defaultResponse = "I'm sorry, I'm still learning. Can you please rephrase that?";
+      learnedResponses.push({ userMessage, botResponse: defaultResponse });
+      return defaultResponse;
+    }
+  </script>
+</head>
+<body>
+  <h1>Tick Studio's Chatbot</h1>
+  <div id="chatbox"></div>
+  <input type="text" id="userInput" placeholder="Enter what you want to say to the bot and it will respond to you." />
+  <button onclick="sendMessage()">Send</button>
+
+  <footer>
+    <p>Tick Studios &copy; 2015-2023 and beyond</p>
+  </footer>
+</body>
+</html>
